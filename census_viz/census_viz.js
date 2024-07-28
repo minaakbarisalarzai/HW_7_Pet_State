@@ -1,4 +1,4 @@
-const width = 600;
+const width = 750;
 const height = 600;
 
 // Create an SVG element to hold the map
@@ -19,6 +19,27 @@ const projection = d3.geoAlbersUsa()
 const path = d3.geoPath()
     .projection(projection);
 
+const petOwnershipData = {};
+
+// Create a tooltip element
+const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip");
+
+d3.csv('pet_ownership.csv').then(data => {
+    data.forEach(d => {
+        petOwnershipData[d.State.toLowerCase()] = {
+            total: +d.PetOwnershipRate,
+            dog: +d.DogOwnershipRate,
+            cat: +d.CatOwnershipRate
+        };
+    });
+
+    console.log("Pet Ownership Data:", petOwnershipData);
+
+    // Initial load of all states
+    loadAllStates();
+});
+
 document.getElementById('stateSelect').addEventListener('change', function() {
     const selectedState = this.value;
 
@@ -29,10 +50,11 @@ document.getElementById('stateSelect').addEventListener('change', function() {
     }
 });
 
+// load one state
 function loadState(stateFile) {
     d3.json(stateFile).then(geojson => {
-        console.log("GeoJSON data:", geojson); 
         svg.selectAll("path").remove(); // Clear previous paths
+        svg.selectAll("text").remove(); // Clear previous labels
 
         if (geojson.type === 'FeatureCollection') {
             svg.selectAll("path")
@@ -40,20 +62,81 @@ function loadState(stateFile) {
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#cfcd99");
+                .attr("fill", "#cfcd99")
+                .on("mouseover", function(event, d) {
+                    const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                    console.log("Mouseover:", d.properties.name, stateData);
+                    if (stateData) {
+                        tooltip.html(
+                            `<strong>${d.properties.name}</strong><br>
+                             Pet Ownership Rate: ${stateData.total}%<br>
+                             Dog Ownership Rate: ${stateData.dog}%<br>
+                             Cat Ownership Rate: ${stateData.cat}%`
+                        );
+                        tooltip.style("opacity", "1").style("visibility", "visible");
+                    }
+                })
+                .on("mousemove", function(event) {
+                    tooltip.style("top", (event.pageY - 10) + "px")
+                           .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.style("opacity", "0").style("visibility", "hidden");
+                });
+
+            svg.selectAll("text")
+                .data(geojson.features)
+                .enter().append("text")
+                .attr("x", d => path.centroid(d)[0])
+                .attr("y", d => path.centroid(d)[1])
+                .attr("text-anchor", "middle")
+                .attr("font-size", "10px")
+                .attr("fill", "black")
+                .text(d => petOwnershipData[d.properties.name.toLowerCase()] ? petOwnershipData[d.properties.name.toLowerCase()].total : '');
         } else if (geojson.type === 'Feature') {
             svg.selectAll("path")
                 .data([geojson])
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#cfcd99");
+                .attr("fill", "#cfcd99")
+                .on("mouseover", function(event, d) {
+                    const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                    console.log("Mouseover:", d.properties.name, stateData);
+                    if (stateData) {
+                        tooltip.html(
+                            `<strong>${d.properties.name}</strong><br>
+                             Pet Ownership Rate: ${stateData.total}%<br>
+                             Dog Ownership Rate: ${stateData.dog}%<br>
+                             Cat Ownership Rate: ${stateData.cat}%`
+                        );
+                        tooltip.style("opacity", "1").style("visibility", "visible");
+                    }
+                })
+                .on("mousemove", function(event) {
+                    tooltip.style("top", (event.pageY - 10) + "px")
+                           .style("left", (event.pageX + 10) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.style("opacity", "0").style("visibility", "hidden");
+                });
+
+            svg.selectAll("text")
+                .data([geojson])
+                .enter().append("text")
+                .attr("x", d => path.centroid(d)[0])
+                .attr("y", d => path.centroid(d)[1])
+                .attr("text-anchor", "middle")
+                .attr("font-size", "10px")
+                .attr("fill", "black")
+                .text(d => petOwnershipData[d.properties.name.toLowerCase()] ? petOwnershipData[d.properties.name.toLowerCase()].total : '');
         }
     }).catch(error => {
         console.error("Error loading the GeoJSON data:", error); 
     });
 }
 
+// load all state
 function loadAllStates() {
     const stateFiles = [
         "alabama.geojson",
@@ -108,7 +191,6 @@ function loadAllStates() {
         "wyoming.geojson"
     ];
     
-
     let allFeatures = [];
 
     stateFiles.forEach((file, index) => {
@@ -121,12 +203,44 @@ function loadAllStates() {
 
             if (index === stateFiles.length - 1) { // Check if it's the last file
                 svg.selectAll("path").remove(); 
+                svg.selectAll("text").remove(); // Clear previous labels
+
                 svg.selectAll("path")
                     .data(allFeatures)
                     .enter().append("path")
                     .attr("d", path)
                     .attr("stroke", "#000")
-                    .attr("fill", "#cfcd99");
+                    .attr("fill", "#cfcd99")
+                    .on("mouseover", function(event, d) {
+                        const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                        console.log("Mouseover:", d.properties.name, stateData);
+                        if (stateData) {
+                            tooltip.html(
+                                `<strong>${d.properties.name}</strong><br>
+                                 Pet Ownership Rate: ${stateData.total}%<br>
+                                 Dog Ownership Rate: ${stateData.dog}%<br>
+                                 Cat Ownership Rate: ${stateData.cat}%`
+                            );
+                            tooltip.style("opacity", "1").style("visibility", "visible");
+                        }
+                    })
+                    .on("mousemove", function(event) {
+                        tooltip.style("top", (event.pageY - 10) + "px")
+                               .style("left", (event.pageX + 10) + "px");
+                    })
+                    .on("mouseout", function() {
+                        tooltip.style("opacity", "0").style("visibility", "hidden");
+                    });
+
+                svg.selectAll("text")
+                    .data(allFeatures)
+                    .enter().append("text")
+                    .attr("x", d => path.centroid(d)[0])
+                    .attr("y", d => path.centroid(d)[1])
+                    .attr("text-anchor", "middle")
+                    .attr("font-size", "10px")
+                    .attr("fill", "black")
+                    .text(d => petOwnershipData[d.properties.name.toLowerCase()] ? petOwnershipData[d.properties.name.toLowerCase()].total : '');
             }
         }).catch(error => {
             console.error(`Error loading the GeoJSON data for ${file}:`, error); 
