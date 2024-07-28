@@ -1,19 +1,23 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>US States Census Data Visualization</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="census_viz.js" defer></script>
     <style>
         #map {
-            width: 100%;
+            width: 40%;
             height: 600px;
         }
     </style>
 </head>
 <body>
+    <h1 class="title">Pet Ownership Statistics By State</h1>
     <select id="stateSelect">
         <option value="">Select a state</option>
         <option value="all">All States</option>

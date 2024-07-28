@@ -1,11 +1,11 @@
-const width = 800;
+const width = 600;
 const height = 600;
 
 // Create an SVG element to hold the map
 const svg = d3.select("#map").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background-color", "#f0f0f0")
+    .style("background-color", "#b0e0e6")
     .call(d3.zoom().on("zoom", (event) => {
         svg.attr("transform", event.transform);
     }))
@@ -40,14 +40,14 @@ function loadState(stateFile) {
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#69b3a2");
+                .attr("fill", "#cfcd99");
         } else if (geojson.type === 'Feature') {
             svg.selectAll("path")
                 .data([geojson])
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#69b3a2");
+                .attr("fill", "#cfcd99");
         }
     }).catch(error => {
         console.error("Error loading the GeoJSON data:", error); 
@@ -126,7 +126,7 @@ function loadAllStates() {
                     .enter().append("path")
                     .attr("d", path)
                     .attr("stroke", "#000")
-                    .attr("fill", "#69b3a2");
+                    .attr("fill", "#cfcd99");
             }
         }).catch(error => {
             console.error(`Error loading the GeoJSON data for ${file}:`, error); 
