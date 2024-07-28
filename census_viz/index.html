@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US States Census Data Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="census_viz.js" defer></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <select id="stateSelect">
+        <option value="">Select a state</option>
+        <option value="all">All States</option>
+        <option value="alabama.geojson">Alabama</option>
+        <option value="alaska.geojson">Alaska</option>
+        <option value="arizona.geojson">Arizona</option>
+        <option value="arkansas.geojson">Arkansas</option>
+        <option value="california.geojson">California</option>
+        <option value="colorado.geojson">Colorado</option>
+        <option value="connecticut.geojson">Connecticut</option>
+        <option value="delaware.geojson">Delaware</option>
+        <option value="florida.geojson">Florida</option>
+        <option value="georgia.geojson">Georgia</option>
+        <option value="hawaii.geojson">Hawaii</option>
+        <option value="idaho.geojson">Idaho</option>
+        <option value="illinois.geojson">Illinois</option>
+        <option value="indiana.geojson">Indiana</option>
+        <option value="iowa.geojson">Iowa</option>
+        <option value="kansas.geojson">Kansas</option>
+        <option value="kentucky.geojson">Kentucky</option>
+        <option value="louisiana.geojson">Louisiana</option>
+        <option value="maine.geojson">Maine</option>
+        <option value="maryland.geojson">Maryland</option>
+        <option value="massachusetts.geojson">Massachusetts</option>
+        <option value="michigan.geojson">Michigan</option>
+        <option value="minnesota.geojson">Minnesota</option>
+        <option value="mississippi.geojson">Mississippi</option>
+        <option value="missouri.geojson">Missouri</option>
+        <option value="montana.geojson">Montana</option>
+        <option value="nebraska.geojson">Nebraska</option>
+        <option value="nevada.geojson">Nevada</option>
+        <option value="new hampshire.geojson">New Hampshire</option>
+        <option value="new jersey.geojson">New Jersey</option>
+        <option value="new mexico.geojson">New Mexico</option>
+        <option value="new york.geojson">New York</option>
+        <option value="north carolina.geojson">North Carolina</option>
+        <option value="north dakota.geojson">North Dakota</option>
+        <option value="ohio.geojson">Ohio</option>
+        <option value="oklahoma.geojson">Oklahoma</option>
+        <option value="oregon.geojson">Oregon</option>
+        <option value="pennsylvania.geojson">Pennsylvania</option>
+        <option value="south carolina.geojson">South Carolina</option>
+        <option value="south dakota.geojson">South Dakota</option>
+        <option value="tennessee.geojson">Tennessee</option>
+        <option value="texas.geojson">Texas</option>
+        <option value="utah.geojson">Utah</option>
+        <option value="vermont.geojson">Vermont</option>
+        <option value="virginia.geojson">Virginia</option>
+        <option value="washington.geojson">Washington</option>
+        <option value="west virginia.geojson">West Virginia</option>
+        <option value="wisconsin.geojson">Wisconsin</option>
+        <option value="wyoming.geojson">Wyoming</option>
+    </select>
+    <div id="map"></div>
+</body>
+</html>
