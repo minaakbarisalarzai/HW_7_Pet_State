@@ -21,6 +21,11 @@ const path = d3.geoPath()
 
 const petOwnershipData = {};
 
+// Define a color scale
+const colorScale = d3.scaleSequential()
+    .domain([0, 100]) 
+    .interpolator(d3.interpolateGreens);
+
 // Create a tooltip element
 const tooltip = d3.select("body").append("div")
     .attr("class", "tooltip");
@@ -36,7 +41,6 @@ d3.csv('pet_ownership.csv').then(data => {
 
     console.log("Pet Ownership Data:", petOwnershipData);
 
-    // Initial load of all states
     loadAllStates();
 });
 
@@ -62,10 +66,12 @@ function loadState(stateFile) {
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#cfcd99")
+                .attr("fill", d => {
+                    const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                    return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                })
                 .on("mouseover", function(event, d) {
                     const stateData = petOwnershipData[d.properties.name.toLowerCase()];
-                    console.log("Mouseover:", d.properties.name, stateData);
                     if (stateData) {
                         tooltip.html(
                             `<strong>${d.properties.name}</strong><br>
@@ -75,13 +81,33 @@ function loadState(stateFile) {
                         );
                         tooltip.style("opacity", "1").style("visibility", "visible");
                     }
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("transform", function() {
+                            const centroid = path.centroid(d);
+                            return `translate(${centroid[0]}, ${centroid[1]}) scale(1.2) translate(${-centroid[0]}, ${-centroid[1]})`;
+                        })
+                        .attr("stroke", "#ff0")
+                        .attr("stroke-width", "2")
+                        .attr("fill", d => colorScale(petOwnershipData[d.properties.name.toLowerCase()].total * 1.1));
                 })
                 .on("mousemove", function(event) {
                     tooltip.style("top", (event.pageY - 10) + "px")
                            .style("left", (event.pageX + 10) + "px");
                 })
-                .on("mouseout", function() {
+                .on("mouseout", function(d) {
                     tooltip.style("opacity", "0").style("visibility", "hidden");
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("transform", "translate(0, 0) scale(1)")
+                        .attr("stroke", "#000")
+                        .attr("stroke-width", "1")
+                        .attr("fill", d => {
+                            const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                            return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                        });
                 });
 
             svg.selectAll("text")
@@ -99,10 +125,12 @@ function loadState(stateFile) {
                 .enter().append("path")
                 .attr("d", path)
                 .attr("stroke", "#000")
-                .attr("fill", "#cfcd99")
+                .attr("fill", d => {
+                    const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                    return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                })
                 .on("mouseover", function(event, d) {
                     const stateData = petOwnershipData[d.properties.name.toLowerCase()];
-                    console.log("Mouseover:", d.properties.name, stateData);
                     if (stateData) {
                         tooltip.html(
                             `<strong>${d.properties.name}</strong><br>
@@ -110,16 +138,43 @@ function loadState(stateFile) {
                              Dog Ownership Rate: ${stateData.dog}%<br>
                              Cat Ownership Rate: ${stateData.cat}%`
                         );
-                        tooltip.style("opacity", "1").style("visibility", "visible");
+                    } else {
+                        tooltip.html(
+                            `<strong>${d.properties.name}</strong><br>
+                             Pet Ownership Rate: N/A<br>
+                             Dog Ownership Rate: N/A<br>
+                             Cat Ownership Rate: N/A`
+                        );
                     }
+                    tooltip.style("opacity", "1").style("visibility", "visible");
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("transform", function() {
+                            const centroid = path.centroid(d);
+                            return `translate(${centroid[0]}, ${centroid[1]}) scale(1.2) translate(${-centroid[0]}, ${-centroid[1]})`;
+                        })
+                        .attr("stroke", "#ff0")
+                        .attr("stroke-width", "2")
+                        .attr("fill", d => stateData ? colorScale(stateData.total * 1.1) : "#cfcd99");
                 })
                 .on("mousemove", function(event) {
                     tooltip.style("top", (event.pageY - 10) + "px")
                            .style("left", (event.pageX + 10) + "px");
                 })
-                .on("mouseout", function() {
+                .on("mouseout", function(d) {
                     tooltip.style("opacity", "0").style("visibility", "hidden");
-                });
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr("transform", "translate(0, 0) scale(1)")
+                        .attr("stroke", "#000")
+                        .attr("stroke-width", "1")
+                        .attr("fill", d => {
+                            const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                            return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                        });
+                });                
 
             svg.selectAll("text")
                 .data([geojson])
@@ -136,7 +191,7 @@ function loadState(stateFile) {
     });
 }
 
-// load all state
+// load all states
 function loadAllStates() {
     const stateFiles = [
         "alabama.geojson",
@@ -190,7 +245,7 @@ function loadAllStates() {
         "wisconsin.geojson",
         "wyoming.geojson"
     ];
-    
+
     let allFeatures = [];
 
     stateFiles.forEach((file, index) => {
@@ -210,10 +265,12 @@ function loadAllStates() {
                     .enter().append("path")
                     .attr("d", path)
                     .attr("stroke", "#000")
-                    .attr("fill", "#cfcd99")
+                    .attr("fill", d => {
+                        const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                        return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                    })
                     .on("mouseover", function(event, d) {
                         const stateData = petOwnershipData[d.properties.name.toLowerCase()];
-                        console.log("Mouseover:", d.properties.name, stateData);
                         if (stateData) {
                             tooltip.html(
                                 `<strong>${d.properties.name}</strong><br>
@@ -221,16 +278,43 @@ function loadAllStates() {
                                  Dog Ownership Rate: ${stateData.dog}%<br>
                                  Cat Ownership Rate: ${stateData.cat}%`
                             );
-                            tooltip.style("opacity", "1").style("visibility", "visible");
+                        } else {
+                            tooltip.html(
+                                `<strong>${d.properties.name}</strong><br>
+                                 Pet Ownership Rate: N/A<br>
+                                 Dog Ownership Rate: N/A<br>
+                                 Cat Ownership Rate: N/A`
+                            );
                         }
+                        tooltip.style("opacity", "1").style("visibility", "visible");
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .attr("transform", function() {
+                                const centroid = path.centroid(d);
+                                return `translate(${centroid[0]}, ${centroid[1]}) scale(1.2) translate(${-centroid[0]}, ${-centroid[1]})`;
+                            })
+                            .attr("stroke", "#ff0")
+                            .attr("stroke-width", "2")
+                            .attr("fill", d => stateData ? colorScale(stateData.total * 1.1) : "#cfcd99");
                     })
                     .on("mousemove", function(event) {
                         tooltip.style("top", (event.pageY - 10) + "px")
                                .style("left", (event.pageX + 10) + "px");
                     })
-                    .on("mouseout", function() {
+                    .on("mouseout", function(d) {
                         tooltip.style("opacity", "0").style("visibility", "hidden");
-                    });
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .attr("transform", "translate(0, 0) scale(1)")
+                            .attr("stroke", "#000")
+                            .attr("stroke-width", "1")
+                            .attr("fill", d => {
+                                const stateData = petOwnershipData[d.properties.name.toLowerCase()];
+                                return stateData ? colorScale(stateData.total) : "#cfcd99"; // Default color if no data
+                            });
+                    });                    
 
                 svg.selectAll("text")
                     .data(allFeatures)

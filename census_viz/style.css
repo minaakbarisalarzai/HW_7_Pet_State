@@ -4,6 +4,22 @@ body, html {
     font-family: Arial, sans-serif;
 }
 
+/* Container for map and network graph */
+#container {
+    display: flex;
+}
+
+/* Network graph container */
+#networkGraph {
+    width: 50%;
+    height: 600px;
+    display: inline-block;
+    vertical-align: top;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+
 /* Container for the map */
 #map {
     width: 50%;
@@ -23,7 +39,6 @@ body, html {
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 
 /* SVG paths styling */
 .state {

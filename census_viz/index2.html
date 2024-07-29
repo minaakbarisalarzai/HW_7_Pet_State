@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Pet Ownership Similarity Network</title>
+    <style>
+        .state-list {
+            float: left;
+            width: 200px;
+        }
+
+        .state-list div {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .state-list div:hover {
+            background-color: #ddd;
+        }
+
+        .selected {
+            background-color: yellow;
+        }
+
+        svg {
+            width: 1000px;
+            height: 800px;
+            border: 1px solid black;
+        }
+
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+
+        .node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+
+        .label {
+            font-size: 12px;
+            fill: black;
+        }
+
+        .link-label {
+            font-size: 10px;
+            fill: red;
+        }
+    </style>
+    <script type="module">
+        import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+        let nodes = [];
+        let petEdges = [];
+        let selectedStates = new Set();
+
+        window.onload = async function () {
+            let data = await d3.csv("pet_ownership.csv");
+            let petOwnershipRates = {};
+
+            // Process the data
+            data.forEach(row => {
+                let state = row['State'];
+                petOwnershipRates[state] = +row['PetOwnershipRate'];
+                nodes.push({ id: state });
+            });
+
+            // Create list of states
+            let stateList = d3.select("body").append("div").attr("class", "state-list");
+            stateList.selectAll("div")
+                .data(nodes)
+                .enter()
+                .append("div")
+                .text(d => d.id)
+                .on("click", function (event, d) {
+                    let stateDiv = d3.select(this);
+                    if (selectedStates.has(d.id)) {
+                        selectedStates.delete(d.id);
+                        stateDiv.classed("selected", false);
+                    } else {
+                        selectedStates.add(d.id);
+                        stateDiv.classed("selected", true);
+                    }
+                    updateVisualization();
+                });
+
+            // Initial edges calculation
+            nodes.forEach((node, i) => {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    let otherNode = nodes[j];
+                    let distance = Math.abs(petOwnershipRates[node.id] - petOwnershipRates[otherNode.id]);
+                    petEdges.push({
+                        source: node.id,
+                        target: otherNode.id,
+                        distance: distance
+                    });
+                }
+            });
+
+            createVisualization();
+        };
+
+        function createVisualization() {
+            const width = 1000;
+            const height = 800;
+
+            const svg = d3.select("body").append("svg");
+
+            window.simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(petEdges).id(d => d.id).distance(d => d.distance * 10))
+                .force("charge", d3.forceManyBody().strength(-200))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            window.link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(petEdges)
+                .enter().append("line")
+                .attr("class", "link")
+                .attr("stroke-width", 1.5);
+
+            window.linkLabel = svg.append("g")
+                .attr("class", "link-labels")
+                .selectAll("text")
+                .data(petEdges)
+                .enter().append("text")
+                .attr("class", "link-label")
+                .text(d => d.distance.toFixed(2));
+
+            window.node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("class", "node")
+                .attr("r", 10)
+                .attr("fill", "steelblue")
+                .call(drag(simulation));
+
+            window.labels = svg.append("g")
+                .attr("class", "labels")
+                .selectAll("text")
+                .data(nodes)
+                .enter().append("text")
+                .attr("class", "label")
+                .text(d => d.id)
+                .attr("dx", 15)
+                .attr("dy", ".35em");
+
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                linkLabel
+                    .attr("x", d => (d.source.x + d.target.x) / 2)
+                    .attr("y", d => (d.source.y + d.target.y) / 2);
+
+                node
+                    .attr("cx", d => d.x)
+                    .attr("cy", d => d.y);
+
+                labels
+                    .attr("x", d => d.x)
+                    .attr("y", d => d.y);
+            });
+        }
+
+        function updateVisualization() {
+            let filteredEdges = petEdges.filter(edge => selectedStates.has(edge.source) || selectedStates.has(edge.target));
+
+            // Update link data
+            link = link.data(filteredEdges, d => `${d.source}-${d.target}`);
+            link.exit().remove();
+            link.enter().append("line")
+                .attr("class", "link")
+                .attr("stroke-width", 1.5);
+
+            // Update link labels
+            linkLabel = linkLabel.data(filteredEdges, d => `${d.source}-${d.target}`);
+            linkLabel.exit().remove();
+            linkLabel.enter().append("text")
+                .attr("class", "link-label")
+                .text(d => d.distance.toFixed(2));
+
+            // Update node visibility
+            node.style("opacity", d => selectedStates.has(d.id) ? 1 : 0.1);
+            labels.style("opacity", d => selectedStates.has(d.id) ? 1 : 0.1);
+
+            simulation.alpha(1).restart();
+        }
+
+        function drag(simulation) {
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+
+            return d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended);
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
