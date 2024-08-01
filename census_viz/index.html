@@ -9,7 +9,7 @@
     <script src="census_viz.js" defer></script>
 </head>
 <body>
-    <h1 class="title">Pet Ownership Statistics By State</h1>
+    <h1 class="title">Pet Ownership Statistics In The US</h1>
     <select id="stateSelect">
         <option value="">Select a state</option>
         <option value="all">All States</option>
@@ -63,7 +63,14 @@
         <option value="wisconsin.geojson">Wisconsin</option>
         <option value="wyoming.geojson">Wyoming</option>
     </select>
-    <div id="map"></div>
-    <div class="tooltip"></div>
+    <h4 id="mapTitle" class="map-title">Total Pet Ownership Rates By State (%)</h4>
+    <div id="container">
+        <div id="map"></div>
+        <div id="barChart"></div>
+    </div>
+    <div class="buttons-container">
+        <img id="dogButton" src="dog.jpeg" alt="Dog Ownership" class="icon-button">
+        <img id="catButton" src="cat.jpeg" alt="Cat Ownership" class="icon-button">
+    </div>
 </body>
 </html>
