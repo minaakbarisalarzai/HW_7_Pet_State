@@ -526,58 +526,58 @@ d3.csv('pet_ownership.csv').then(data => {
 // =============================== Color Legend For The Map   ========================================== //
 
 // Function to add the legend
-function addLegend() {
-    const legendWidth = 300;
-    const legendHeight = 20;
+// function addLegend() {
+//     legendWidth = 300;
+//     legendHeight = 20;
 
-    const legendSvg = d3.select("#map").append("svg")
-        .attr("width", legendWidth)
-        .attr("height", legendHeight + 30)
-        .attr("class", "legend")
-        .style("position", "absolute")
-        .style("bottom", "0px")
-        .style("left", "430px");
+//     const legendSvg = d3.select("#map").append("svg")
+//         .attr("width", legendWidth)
+//         .attr("height", legendHeight + 30)
+//         .attr("class", "legend")
+//         .style("position", "absolute")
+//         .style("bottom", "0px")
+//         .style("left", "430px");
 
-    const gradient = legendSvg.append("defs")
-        .append("linearGradient")
-        .attr("id", "legend-gradient")
-        .attr("x1", "0%")
-        .attr("x2", "100%")
-        .attr("y1", "0%")
-        .attr("y2", "0%");
+//     const gradient = legendSvg.append("defs")
+//         .append("linearGradient")
+//         .attr("id", "legend-gradient")
+//         .attr("x1", "0%")
+//         .attr("x2", "100%")
+//         .attr("y1", "0%")
+//         .attr("y2", "0%");
 
-    gradient.append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", d3.interpolateGreens(0));
+//     gradient.append("stop")
+//         .attr("offset", "0%")
+//         .attr("stop-color", d3.interpolateGreens(0));
 
-    gradient.append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", d3.interpolateGreens(1));
+//     gradient.append("stop")
+//         .attr("offset", "100%")
+//         .attr("stop-color", d3.interpolateGreens(1));
 
-    legendSvg.append("rect")
-        .attr("x", 10)
-        .attr("y", 10)
-        .attr("width", legendWidth - 20)
-        .attr("height", legendHeight)
-        .style("fill", "url(#legend-gradient)");
+//     legendSvg.append("rect")
+//         .attr("x", 10)
+//         .attr("y", 10)
+//         .attr("width", legendWidth - 20)
+//         .attr("height", legendHeight)
+//         .style("fill", "url(#legend-gradient)");
 
-    legendSvg.append("text")
-        .attr("x", 10)
-        .attr("y", legendHeight + 25)
-        .attr("text-anchor", "start")
-        .style("font-size", "12px")
-        .text("0%");
+//     legendSvg.append("text")
+//         .attr("x", 10)
+//         .attr("y", legendHeight + 25)
+//         .attr("text-anchor", "start")
+//         .style("font-size", "12px")
+//         .text("0%");
 
-    legendSvg.append("text")
-        .attr("x", legendWidth - 10)
-        .attr("y", legendHeight + 25)
-        .attr("text-anchor", "end")
-        .style("font-size", "12px")
-        .text("100%");
-}
+//     legendSvg.append("text")
+//         .attr("x", legendWidth - 10)
+//         .attr("y", legendHeight + 25)
+//         .attr("text-anchor", "end")
+//         .style("font-size", "12px")
+//         .text("100%");
+// }
 
-// Call the addLegend function to add the legend to the map
-addLegend();
+// // Call the addLegend function to add the legend to the map
+// addLegend();
 
 
 /// =============================== End Of Legend Code ===========================================  // 

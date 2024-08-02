@@ -137,7 +137,7 @@ body, html {
 
 .table-container td {
     padding: 10px 20px;
-    border: 1px solid #151311;
+    /* border: 1px solid #151311; */
 }
 
 .table-container td:first-child {
@@ -170,4 +170,121 @@ body, html {
     100% {
         transform: translateX(10px);
     }
+}
+
+
+
+
+
+
+
+
+
+
+  #stateSelect2 {
+    /* display: block; */
+    width: 200px;
+    padding: 10px;
+    margin: 20px auto;
+    font-size: 16px;
+    font-weight: bold;
+    /* color: #111114; */
+    background: linear-gradient(135deg, #f7b16b 0%, #f0e960 100%);
+    border: 1px solid #eca529;
+    border-radius: 25px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    /* transition: all 0.3s ease; */
+    /* cursor: pointer; */
+    /* outline: none; */
+    text-align: center;
+    /* overflow-y: auto;  */
+}
+#stateSelect2:hover {
+    background: linear-gradient(135deg, #fdf185 0%, #f6ba65 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#stateSelect2:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+} 
+
+.container2 {
+    margin: 20px;
+}
+ 
+.state-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 1000px; /* Adjust max-width to fit your needs */
+}
+
+.state-list div {
+    padding: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.state-list div:hover {
+    background-color: #ddd;
+}
+
+.selected {
+    background-color: yellow;
+}
+
+svg {
+    width: 1000px;
+    height: 800px;
+ 
+}
+
+.link {
+    stroke: #999;
+    stroke-opacity: 0.6;
+}
+
+.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.label {
+    font-size: 12px;
+    fill: rgb(0, 0, 0);
+}
+
+.link-label {
+    font-size: 10px;
+    fill: red;
+}
+
+
+
+
+#legend {
+    position: absolute;
+    bottom: 0;
+    left: 200px;
+    width: -300px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.legend-bar {
+    width: 260px;
+    height: 20px;
+    background: linear-gradient(to right, #e5f5e0, #006837);
+    border: 1px solid #ccc;
+    margin: 0 10px;
+}
+.legend-label {
+    font-size: 12px;
 }
