@@ -5,7 +5,6 @@ const height = 600;
 const svg = d3.select("#map").append("svg")
     .attr("width", width)
     .attr("height", height)
-    .style("background-color", "#b0e0e6")
     .call(d3.zoom().on("zoom", (event) => {
         svg.attr("transform", event.transform);
     }))
@@ -121,7 +120,7 @@ function loadState(stateFile) {
                     // Remove highlight from the corresponding bar in the dog and cat bar charts
                     d3.selectAll("#barChart .bar")
                         .filter(barData => barData.State === d.properties.name.toLowerCase())
-                        .attr("fill", "steelblue");
+                        .attr("fill", "seablue");
                 });
 
             svg.selectAll("text")
@@ -372,6 +371,7 @@ function loadAllStates() {
             console.error(`Error loading the GeoJSON data for ${file}:`, error); 
         });
     });
+    
 }
 
 
@@ -503,6 +503,22 @@ document.getElementById('catButton').addEventListener('click', function() {
     drawBarChart(catData, "Cat Ownership Rate by State");
 });
 
+// Call the function to draw the dog bar chart by default
+d3.csv('pet_ownership.csv').then(data => {
+    data.forEach(d => {
+        petOwnershipData[d.State.toLowerCase()] = {
+            total: +d.PetOwnershipRate,
+            dog: +d.DogOwnershipRate,
+            cat: +d.CatOwnershipRate
+        };
+    });
+
+    const dogData = Object.keys(petOwnershipData).map(state => ({
+        State: state,
+        value: petOwnershipData[state].dog
+    }));
+    drawBarChart(dogData, "Dog Ownership Rate by State");
+});
 
 // ================================= END OF BAR CHART ================================================== //
 
@@ -562,5 +578,6 @@ function addLegend() {
 
 // Call the addLegend function to add the legend to the map
 addLegend();
+
 
 /// =============================== End Of Legend Code ===========================================  // 

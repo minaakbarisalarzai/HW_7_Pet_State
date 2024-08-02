@@ -2,6 +2,7 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
+    background-color: rgba(164, 189, 201, 0.645);
 }
 
 #container {
@@ -32,10 +33,29 @@ body, html {
     padding: 10px;
     margin: 20px auto;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    color: #111114;
+    background: linear-gradient(135deg, #f7b16b 0%, #f0e960 100%);
+    border: 1px solid #eca529;
+    border-radius: 25px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    outline: none;
+    text-align: center;
 }
+
+#stateSelect:hover {
+    background: linear-gradient(135deg, #fdf185 0%, #f6ba65 100%);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+#stateSelect:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
 
 .tooltip {
     position: absolute;
@@ -86,10 +106,68 @@ body, html {
 }
 
 .map-title {
-    text-align: left;
+    text-align: middle;
     font-size: 16px;
     margin-top: 7px;
     margin-bottom: 10px;
     text-decoration: underline;
     text-anchor: middle;
+}
+
+#mapTitle {
+    position: absolute;
+    top: 150px;
+    left: 400px;
+    transform: translateX(-50%);
+    text-align: center;
+    margin: 0;
+}
+
+.table-container {
+    position: absolute;
+    top: 42px; 
+    right: 80px; 
+    text-align: center;
+    font-weight: bold;
+}
+
+.table-container table {
+    border-collapse: collapse;
+}
+
+.table-container td {
+    padding: 10px 20px;
+    border: 1px solid #151311;
+}
+
+.table-container td:first-child {
+    cursor: pointer;
+    color: rgb(239, 134, 53);
+}
+
+.animated-text {
+    animation: bounceText 2s infinite;
+}
+
+.animated-arrow {
+    animation: moveArrow 1s infinite alternate;
+    font-size: 2em;
+}
+
+@keyframes bounceText {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes moveArrow {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(10px);
+    }
 }
